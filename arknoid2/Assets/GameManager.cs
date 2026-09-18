@@ -9,8 +9,8 @@ public class GameManager : MonoBehaviour
     public int score = 0;
     public int lives = 3;
 
-    [SerializeField] private TMP_Text scoreText;
-    [SerializeField] private TMP_Text livesText;
+    private TMP_Text scoreText;
+    private TMP_Text livesText;
 
     private void Awake()
     {
@@ -18,6 +18,8 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
         else
         {
@@ -27,7 +29,30 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        ProcurarTextos();
         UpdateUI();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        ProcurarTextos();
+        UpdateUI();
+    }
+
+    private void ProcurarTextos()
+    {
+        GameObject scoreObject = GameObject.Find("ScoreText");
+        GameObject livesObject = GameObject.Find("LivesText");
+
+        if (scoreObject != null)
+        {
+            scoreText = scoreObject.GetComponent<TMP_Text>();
+        }
+
+        if (livesObject != null)
+        {
+            livesText = livesObject.GetComponent<TMP_Text>();
+        }
     }
 
     public void AddScore(int points)
@@ -42,12 +67,12 @@ public class GameManager : MonoBehaviour
 
         if (lives <= 0)
         {
-            SceneManager.LoadScene("Derrota");
+            SceneManager.LoadScene("derrota");
         }
         else
         {
-            Scene currentScene = SceneManager.GetActiveScene();
-            SceneManager.LoadScene(currentScene.name);
+            Scene cenaAtual = SceneManager.GetActiveScene();
+            SceneManager.LoadScene(cenaAtual.name);
         }
     }
 
@@ -62,9 +87,21 @@ public class GameManager : MonoBehaviour
     public void UpdateUI()
     {
         if (scoreText != null)
+        {
             scoreText.text = "Pontos: " + score;
+        }
 
         if (livesText != null)
+        {
             livesText.text = "Vidas: " + lives;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+        }
     }
 }

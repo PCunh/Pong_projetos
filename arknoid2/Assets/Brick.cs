@@ -2,29 +2,51 @@ using UnityEngine;
 
 public class Brick : MonoBehaviour
 {
-    [SerializeField] private int pontos = 10;
+    public int hitsToBreak = 1;
 
-    private bool destruido = false;
+    private int currentHits = 0;
+    private SpriteRenderer spriteRenderer;
+
+    private void Start()
+    {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+    }
 
     public void Destruir()
     {
-        if (destruido)
-            return;
+        currentHits++;
 
-        destruido = true;
-
-        if (GameManager.Instance != null)
+        // Ainda precisa de mais pancadas
+        if (currentHits < hitsToBreak)
         {
-            GameManager.Instance.AddScore(pontos);
+            AtualizarAparencia();
+            return;
         }
 
-        LevelManager levelManager = FindFirstObjectByType<LevelManager>();
+        // O bloco foi destruído
+        GameManager gameManager = FindAnyObjectByType<GameManager>();
 
-        if (levelManager != null)
+        if (gameManager != null)
         {
-            levelManager.BlocoDestruido();
+            gameManager.AddScore(10);
         }
 
         Destroy(gameObject);
+    }
+
+    private void AtualizarAparencia()
+    {
+        if (spriteRenderer == null)
+            return;
+
+        float progresso = (float)currentHits / hitsToBreak;
+
+        Color novaCor = Color.Lerp(
+            Color.white,
+            new Color(0.25f, 0.25f, 0.25f),
+            progresso
+        );
+
+        spriteRenderer.color = novaCor;
     }
 }
