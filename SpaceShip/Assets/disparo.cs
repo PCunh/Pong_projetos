@@ -16,7 +16,7 @@ public class Tiro : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Inimigo"))
+        if (collision.CompareTag("inimigos"))
         {
             Destroy(collision.gameObject);
             Destroy(gameObject);

@@ -21,11 +21,11 @@ public class Nave : MonoBehaviour
 
     void Movimentar()
     {
-        float horizontal = 0f;
-        float vertical = 0f;
-
         if (Keyboard.current == null)
             return;
+
+        float horizontal = 0f;
+        float vertical = 0f;
 
         if (Keyboard.current.wKey.isPressed ||
             Keyboard.current.upArrowKey.isPressed)
@@ -52,13 +52,16 @@ public class Nave : MonoBehaviour
 
     void Atirar()
     {
-        if (tiroPrefab != null && pontoDisparo != null)
+        if (tiroPrefab == null || pontoDisparo == null)
         {
-            Instantiate(
-                tiroPrefab,
-                pontoDisparo.position,
-                Quaternion.identity
-            );
+            Debug.LogWarning("Prefab do tiro ou PontoDisparo não configurado!");
+            return;
         }
+
+        Instantiate(
+            tiroPrefab,
+            pontoDisparo.position,
+            pontoDisparo.rotation
+        );
     }
 }

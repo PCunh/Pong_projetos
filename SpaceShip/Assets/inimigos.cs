@@ -1,16 +1,32 @@
 using UnityEngine;
 
-public class Inimigo : MonoBehaviour
+public class disparo : MonoBehaviour
 {
-    public float velocidade = 2f;
+    public float velocidade = 10f;
 
     void Update()
     {
-        transform.Translate(Vector2.left * velocidade * Time.deltaTime);
+        transform.Translate(
+            Vector2.right * velocidade * Time.deltaTime
+        );
 
-        if (transform.position.x < -10f)
+        if (transform.position.x > 10f)
         {
             Destroy(gameObject);
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("inimigos"))
+        {
+            Destroy(collision.gameObject);
+            Destroy(gameObject);
+
+            if (GameManager.Instance != null)
+            {
+                GameManager.Instance.AdicionarPontos(10);
+            }
         }
     }
 }
